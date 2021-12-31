@@ -2,8 +2,7 @@ import math
 import warnings
 
 import h5py
-from keras import Model
-
+from tensorflow.keras import Model
 
 def load_optimizer_weights(model: Model, model_save_path: str):
     """
@@ -36,20 +35,24 @@ def contain_tf_gpu_mem_usage():
     making it impossible to train multiple networks at once.
     This function will disable such behaviour in TensorFlow.
     """
-    from keras import backend
-    if backend.backend() != 'tensorflow':
-        return
-    try:
-        # noinspection PyPackageRequirements
-        import tensorflow as tf
-    except ImportError:
-        pass
-    else:
-        from keras.backend.tensorflow_backend import set_session
-        config = tf.ConfigProto()
-        config.gpu_options.allow_growth = True  # dynamically grow the memory
-        sess = tf.Session(config=config)
-        set_session(sess)
+    import tensorflow as tf
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    for gpu in gpus:
+        tf.config.experimental.set_memory_growth(gpu, True)
+    # from keras import backend
+    # if backend.backend() != 'tensorflow':
+    #     return
+    # try:
+    #     # noinspection PyPackageRequirements
+    #     import tensorflow as tf
+    # except ImportError:
+    #     pass
+    # else:
+    #     from keras.backend.tensorflow_backend import set_session
+    #     config = tf.compat.v1.ConfigProto()
+    #     config.gpu_options.allow_growth = True  # dynamically grow the memory
+    #     sess = tf.compat.v1.Session(config=config)
+    #     set_session(sess)
 
 
 class CosineLRSchedule:

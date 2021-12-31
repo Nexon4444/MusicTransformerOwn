@@ -25,6 +25,7 @@ def universal_transformer_gpt_model(
     word_ids = Input(shape=(max_seq_length,), dtype='int32', name='word_ids')
     l2_regularizer = (regularizers.l2(l2_reg_penalty) if l2_reg_penalty
                       else None)
+
     embedding_layer = ReusableEmbedding(
         vocabulary_size, word_embedding_size,
         input_length=max_seq_length,
@@ -33,14 +34,19 @@ def universal_transformer_gpt_model(
         # Regularization Strategies for Embedding-based Neural Networks"
         # https://arxiv.org/pdf/1508.03721.pdf
         embeddings_regularizer=l2_regularizer)
+
     output_layer = TiedOutputEmbedding(
         projection_regularizer=l2_regularizer,
         projection_dropout=embedding_dropout,
         name='word_prediction_logits')
+
     coordinate_embedding_layer = TransformerCoordinateEmbedding(
         transformer_depth,
+
         name='coordinate_embedding')
+
     transformer_act_layer = TransformerACT(name='adaptive_computation_time')
+
     transformer_block = TransformerBlock(
         name='transformer', num_heads=num_heads,
         residual_dropout=transformer_dropout,

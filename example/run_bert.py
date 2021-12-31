@@ -13,12 +13,14 @@ from keras_transformer.bert import (
     BatchGeneratorForBERT, masked_perplexity,
     MaskedPenalizedSparseCategoricalCrossentropy)
 
-from . import wikitext
-from .bpe import BPEEncoder
-from .utils import (
+import wikitext
+from bpe import BPEEncoder
+from utils import (
     load_optimizer_weights, contain_tf_gpu_mem_usage, CosineLRSchedule)
-from .models import transformer_bert_model
-
+from models import transformer_bert_model
+import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
+# tf.disable_v2_behavior()
 BERT_SPECIAL_TOKENS = ['[SEP]', '[CLS]', '[MASK]']
 
 # Penalty for confidence of the output distribution, as described in
@@ -133,6 +135,10 @@ def main(model_save_path: str,
         wikitext.TRAINING_SET_NAME, encoder, batch_size, max_seq_length)
     validation_batches = wikitext_bert_generator(
         wikitext.VALIDATION_SET_NAME, encoder, batch_size, max_seq_length)
+
+    for el in training_batches.generate_batches():
+        print(el)
+
     model.fit_generator(
         generator=training_batches.generate_batches(),
         steps_per_epoch=training_batches.steps_per_epoch,
@@ -190,13 +196,13 @@ if __name__ == '__main__':
         help='Display the summary of the model before the training begins')
     _args = _argparser.parse_args()
 
-    main(model_save_path=_args.save,
-         model_name=_args.model,
-         tensorboard_log_path=_args.tensorboard_log,
-         num_epochs=_args.epochs,
-         learning_rate=_args.lr,
-         batch_size=_args.batch_size,
-         max_seq_length=_args.seq_len,
-         word_embedding_size=_args.we_size,
-         load_weights_only=_args.load_weights_only,
-         show_model_summary=_args.model_summary)
+    # main(model_save_path=_args.save,
+    #      model_name=_args.model,
+    #      tensorboard_log_path=_args.tensorboard_log,
+    #      num_epochs=_args.epochs,
+    #      learning_rate=_args.lr,
+    #      batch_size=_args.batch_size,
+    #      max_seq_length=_args.seq_len,
+    #      word_embedding_size=_args.we_size,
+    #      load_weights_only=_args.load_weights_only,
+    #      show_model_summary=_args.model_summary)

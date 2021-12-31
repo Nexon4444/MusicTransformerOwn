@@ -11,11 +11,12 @@ from keras import backend as K
 from keras import callbacks
 import numpy as np
 
-from . import wikitext
-from .bpe import BPEEncoder, ID_FOR_PADDING
-from .utils import (
-    load_optimizer_weights, contain_tf_gpu_mem_usage, CosineLRSchedule)
-from .models import (
+
+import wikitext
+from bpe import BPEEncoder, ID_FOR_PADDING
+from utils import (load_optimizer_weights, contain_tf_gpu_mem_usage, CosineLRSchedule)
+
+from models import (
     universal_transformer_gpt_model, vanilla_transformer_gpt_model)
 
 
